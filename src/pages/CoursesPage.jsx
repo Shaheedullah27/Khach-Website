@@ -1,88 +1,147 @@
 import React from 'react';
 import Icon from '../components/Icon';
-import { useCourses } from '../context/CourseContext';
+
+const COURSES_DATA = [
+  {
+    id: 'c1',
+    slug: 'course-youtube-automation',
+    title: 'YouTube Automation',
+    description: 'Master YouTube channel growth, automation tools, and content strategy.',
+    badge: 'Advanced',
+    duration: '2 Months',
+    level: 'Advanced',
+    image: '/images/yt.png',
+    topics: ['Niche research', 'Channel automation', 'YouTube SEO']
+  },
+  {
+    id: 'c2',
+    slug: 'course-canva',
+    title: 'Graphic Designing through Canva',
+    description: 'Create stunning graphics with Canva for social media, branding and more.',
+    badge: 'Advanced',
+    duration: '2 Months',
+    level: 'Advanced',
+    image: '/images/canva.png',
+    topics: ['Design fundamentals', 'Brand kits', 'Social graphics']
+  },
+  {
+    id: 'c3',
+    slug: 'course-wordpress',
+    title: 'Web Development through WordPress',
+    description: 'Build professional websites without coding using WordPress.',
+    badge: 'Advanced',
+    duration: '2 Months',
+    level: 'Advanced',
+    image: '/images/wp.png',
+    topics: ['Themes & plugins', 'Elementor builds', 'SEO basics']
+  },
+  {
+    id: 'c4',
+    slug: 'course-artificial-intelligence',
+    title: 'Advanced Artificial Intelligence',
+    description: 'Explore AI tools, automation, image/video generation, AI productivity.',
+    badge: 'Advanced',
+    duration: '2 Months',
+    level: 'Advanced',
+    image: '/images/Ai.png',
+    topics: ['Prompt engineering', 'Image & video AI', 'AI automation']
+  }
+];
 
 export default function CoursesPage({ onNavigate }) {
-  const { courses } = useCourses();
-
   return (
-    <div className="courses-page-view main-container" style={{ padding: '40px 20px' }}>
-      <div className="section-header" style={{ marginBottom: '32px' }}>
-        <div>
-          <span className="section-kicker">Curriculum</span>
-          <h1 className="section-title mt-1">Practical Skill Tracks</h1>
-          <p className="section-subtitle">
-            Structured 2-month mentorship programs with step-by-step guidance, practical tasks, and mentor assignment review.
+    <section id="viewCourses" className="view-section active">
+      <div className="main-container">
+        <div className="page-heading">
+          <span className="pill-badge">
+            <Icon name="book-open" />
+            <span>Curriculum</span>
+          </span>
+          <h1 className="page-title">Course tracks</h1>
+          <p className="page-subtitle">
+            Explore each track and the practical skills covered across the programme. Every track
+            runs for two months and is built around real deliverables.
           </p>
         </div>
-      </div>
 
-      <div className="courses-detailed-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '24px' }}>
-        {courses.map(course => (
-          <div key={course.id} className="card course-card" style={{ display: 'flex', flexDirection: 'column' }}>
-            <div className="course-card-media" style={{ height: '200px', overflow: 'hidden', position: 'relative' }}>
-              <img
-                src={course.thumb || course.image}
-                alt={course.title}
-                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                onError={(e) => {
-                  e.target.onerror = null;
-                  e.target.src = '/images/thumb-ai.jpeg';
-                }}
-              />
-              <span className="course-badge" style={{ position: 'absolute', top: '12px', right: '12px' }}>{course.badge}</span>
-            </div>
-
-            <div className="course-card-content" style={{ padding: '24px', flex: 1, display: 'flex', flexDirection: 'column' }}>
-              <div className="course-meta-pills" style={{ display: 'flex', gap: '10px', marginBottom: '12px' }}>
-                <span className="pill-sm"><Icon name="clock" /> {course.duration}</span>
-                <span className="pill-sm"><Icon name="award" /> {course.level}</span>
+        <div className="course-grid" id="allCoursesGrid">
+          {COURSES_DATA.map((course) => (
+            <a
+              key={course.id}
+              className="course-card"
+              href={`/course/${course.slug}`}
+              onClick={(e) => {
+                e.preventDefault();
+                onNavigate(`/course/${course.slug}`);
+              }}
+              aria-label={`Open the ${course.title} course page`}
+            >
+              <div className="course-image-slot">
+                {course.image ? (
+                  <img
+                    src={course.image}
+                    alt={course.title}
+                    loading="lazy"
+                    decoding="async"
+                    onError={(e) => {
+                      e.target.style.display = 'none';
+                      if (e.target.parentElement) {
+                        e.target.parentElement.innerHTML = `<span>${course.title}</span>`;
+                      }
+                    }}
+                  />
+                ) : (
+                  <span>{course.title}</span>
+                )}
               </div>
-
-              <h2 className="course-title" style={{ fontSize: '1.4rem', fontWeight: 700, marginBottom: '10px' }}>{course.title}</h2>
-              <p className="course-desc" style={{ color: 'var(--text-secondary)', marginBottom: '16px' }}>{course.description}</p>
-
-              <div style={{ background: 'var(--surface-sunken)', padding: '14px', borderRadius: '8px', marginBottom: '16px' }}>
-                <div style={{ fontWeight: 600, fontSize: '0.85rem', marginBottom: '8px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Key Deliverables</div>
-                <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                  {(course.highlights || []).map((h, idx) => (
-                    <li key={idx} style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.9rem' }}>
-                      <Icon name="check" style={{ color: 'var(--success)' }} />
-                      <span>{h}</span>
-                    </li>
+              <div className="course-badge-row">
+                <span className="badge badge-primary">{course.duration}</span>
+                <span className="badge badge-accent">{course.badge}</span>
+              </div>
+              <h3 className="course-title">{course.title}</h3>
+              <p className="course-desc">{course.description}</p>
+              {Array.isArray(course.topics) && (
+                <div className="course-topics">
+                  {course.topics.map((topic, i) => (
+                    <span key={i} className="topic-chip">{topic}</span>
                   ))}
-                </ul>
-              </div>
-
-              <div style={{ marginTop: 'auto', display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                <button
-                  className="btn btn-primary"
-                  type="button"
-                  onClick={() => onNavigate(`/course/${course.slug}`)}
-                >
-                  View Full Track Details
-                </button>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
-                  <button
-                    className="btn btn-outline"
-                    type="button"
-                    onClick={() => onNavigate(`/practical-classes?course=${encodeURIComponent(course.title)}`)}
-                  >
-                    Watch lectures
-                  </button>
-                  <button
-                    className="btn btn-secondary"
-                    type="button"
-                    onClick={() => onNavigate('/register')}
-                  >
-                    Enroll now
-                  </button>
                 </div>
+              )}
+              <div className="course-footer">
+                <span className="badge badge-neutral">{course.level}</span>
+                <span className="course-card-cta">
+                  View course <Icon name="arrow-right" />
+                </span>
               </div>
-            </div>
+            </a>
+          ))}
+        </div>
+
+        <div className="middle-banner mt-4">
+          <h2>Not sure which track fits?</h2>
+          <p>Message your mentor on WhatsApp and describe your goal — you will get a straight answer.</p>
+          <div className="row" style={{ justifyContent: 'center', marginTop: '1.5rem' }}>
+            <a
+              className="btn btn-white"
+              href="https://wa.me/923327451571"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <Icon name="phone" /> Ask on WhatsApp
+            </a>
+            <a
+              className="btn btn-glass"
+              href="/register"
+              onClick={(e) => {
+                e.preventDefault();
+                onNavigate('/register');
+              }}
+            >
+              Create account
+            </a>
           </div>
-        ))}
+        </div>
       </div>
-    </div>
+    </section>
   );
 }

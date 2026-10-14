@@ -16,51 +16,86 @@ export default function ForgotPasswordPage({ onNavigate }) {
 
   return (
     <main className="auth-shell" id="authMain">
-      <div className="auth-main" style={{ margin: '0 auto', maxWidth: '480px' }}>
+      <aside className="auth-aside" aria-hidden="true">
+        <div className="hero-bg">
+          <span className="hero-bg__mesh"></span>
+          <span className="hero-bg__grid"></span>
+          <span className="hero-bg__glow hero-bg__glow--a"></span>
+          <span className="hero-bg__glow hero-bg__glow--b"></span>
+        </div>
+        <div style={{ position: 'relative', zIndex: 1 }}>
+          <span className="pill-badge pill-glass">
+            <Icon name="graduation-cap" />
+            <span>Student portal</span>
+          </span>
+          <h2 className="mt-3">Your learning journey is right where you left it.</h2>
+          <p className="mt-2">Reset your password securely and return to your courses, tasks and progress.</p>
+        </div>
+        <p className="small" style={{ position: 'relative', zIndex: 1, color: '#8fa2c4' }}>
+          © 2026 Mentor Ahmad Saleem
+        </p>
+      </aside>
+
+      <div className="auth-main">
         <div className="auth-card">
           <div className="auth-header">
-            <span className="pill-badge"><Icon name="key" /><span>Password Recovery</span></span>
-            <h1>Reset your password</h1>
-            <p>Enter your student account email address to receive password reset instructions.</p>
+            <span className="pill-badge">
+              <Icon name="key" />
+              <span>Account recovery</span>
+            </span>
+            <h1>Forgot your password?</h1>
+            <p>Enter the email address registered to your student account and we’ll send you a secure reset link.</p>
           </div>
 
           {submitted ? (
             <div className="alert alert-success" style={{ display: 'block', margin: '20px 0' }}>
-              <h3>Recovery email dispatched</h3>
               <p>Please check your inbox at <strong>{email}</strong> for instructions to reset your account password.</p>
-              <button className="btn btn-outline mt-3" onClick={() => onNavigate('/login')}>
-                Return to Login
+              <button
+                className="btn btn-outline mt-3"
+                type="button"
+                onClick={() => onNavigate('/login')}
+              >
+                Return to student login
               </button>
             </div>
           ) : (
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={handleSubmit} noValidate>
               <div className="form-group">
                 <label htmlFor="recoveryEmail">Email address</label>
                 <div className="input-wrap">
-                  <span className="input-icon"><Icon name="mail" /></span>
+                  <span className="input-icon">
+                    <Icon name="mail" />
+                  </span>
                   <input
                     type="email"
                     id="recoveryEmail"
                     className="form-control"
-                    placeholder="student@example.com"
+                    placeholder="you@example.com"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
+                    autoFocus
                   />
                 </div>
               </div>
 
               <button type="submit" className="btn btn-primary btn-block btn-lg mt-3">
-                Send Recovery Instructions <Icon name="arrow-right" />
+                <span>Send reset link</span>
+                <Icon name="arrow-right" />
               </button>
             </form>
           )}
 
-          <div className="auth-footer" style={{ marginTop: '20px', textAlign: 'center' }}>
+          <div className="auth-footer">
             <p>
-              Remember your password?{' '}
-              <a href="/login" onClick={(e) => { e.preventDefault(); onNavigate('/login'); }}>
-                Back to Login
+              <a
+                href="/login"
+                onClick={(e) => {
+                  e.preventDefault();
+                  onNavigate('/login');
+                }}
+              >
+                Return to student login
               </a>
             </p>
           </div>

@@ -9,8 +9,13 @@ export function ThemeProvider({ children }) {
   });
 
   useEffect(() => {
-    document.body.classList.remove('light-theme', 'dark-theme');
-    document.body.classList.add(`${theme}-theme`);
+    if (theme === 'dark') {
+      document.body.classList.remove('light-theme');
+      document.body.classList.add('dark-theme', 'dark');
+    } else {
+      document.body.classList.remove('dark-theme', 'dark');
+      document.body.classList.add('light-theme');
+    }
     localStorage.setItem('themePreference', theme);
   }, [theme]);
 

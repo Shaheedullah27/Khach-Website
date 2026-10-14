@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Header from './components/Header';
 import Footer from './components/Footer';
+import Icon from './components/Icon';
 import HomePage from './pages/HomePage';
 import CoursesPage from './pages/CoursesPage';
 import CourseDetailPage from './pages/CourseDetailPage';
@@ -130,6 +131,54 @@ function MainRouter() {
 
     return <NotFoundPage onNavigate={navigate} />;
   };
+
+  // Determine page layout style
+  const isMeetDeveloper = currentPath === '/meet-developer';
+  const isAuthPage = ['/login', '/register', '/forgot-password', '/reset-password', '/admin/login'].includes(currentPath);
+  const isToolView = currentPath.startsWith('/tools/') && currentPath !== '/tools';
+
+  if (isMeetDeveloper) {
+    return renderRoute();
+  }
+
+  if (isAuthPage) {
+    return (
+      <div className="auth-wrapper-container">
+        <header className="site-header" id="siteHeader">
+          <div className="nav-container">
+            <a
+              className="brand-logo"
+              href="/"
+              onClick={(e) => { e.preventDefault(); navigate('/'); }}
+              aria-label="Ahmad Saleem Mentorship — home"
+            >
+              <span className="logo-icon" aria-hidden="true"><Icon name="graduation-cap" /></span>
+              <span className="logo-text">Ahmad Saleem</span>
+            </a>
+            <div className="nav-actions">
+              <a
+                className="btn btn-ghost"
+                href="/"
+                onClick={(e) => { e.preventDefault(); navigate('/'); }}
+              >
+                Back to home
+              </a>
+            </div>
+          </div>
+        </header>
+        {renderRoute()}
+      </div>
+    );
+  }
+
+  if (isToolView) {
+    return (
+      <div className="tool-view-wrapper">
+        <Header currentPath={currentPath} onNavigate={navigate} />
+        {renderRoute()}
+      </div>
+    );
+  }
 
   return (
     <div className="site-wrapper" style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>

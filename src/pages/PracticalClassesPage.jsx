@@ -1,121 +1,173 @@
-import React, { useState } from 'react';
+import React, { useEffect } from 'react';
 import Icon from '../components/Icon';
-import { useCourses } from '../context/CourseContext';
+
+const PLAYLIST_LINKS = {
+  canva: 'https://youtube.com/playlist?list=PLEUsuq8UIsYA&si=Qs0RNbVoQD7Kdng4',
+  graphicdesigning: 'https://youtube.com/playlist?list=PLEUsuq8UIsYA&si=Qs0RNbVoQD7Kdng4',
+  graphicdesigningthroughcanva: 'https://youtube.com/playlist?list=PLEUsuq8UIsYA&si=Qs0RNbVoQD7Kdng4',
+  graphicsdesigning: 'https://youtube.com/playlist?list=PLEUsuq8UIsYA&si=Qs0RNbVoQD7Kdng4',
+  ai: 'https://youtube.com/playlist?list=PLQTO9V3Zldy4&si=y9dn_XdUIkElVZkj',
+  artificialintelligence: 'https://youtube.com/playlist?list=PLQTO9V3Zldy4&si=y9dn_XdUIkElVZkj',
+  advancedartificialintelligence: 'https://youtube.com/playlist?list=PLQTO9V3Zldy4&si=y9dn_XdUIkElVZkj',
+  wordpress: 'https://youtube.com/playlist?list=PLc0Bqc25RKTg&si=RezB3e_Dcfm7jOqA',
+  webdevelopment: 'https://youtube.com/playlist?list=PLc0Bqc25RKTg&si=RezB3e_Dcfm7jOqA',
+  webdevelopmentthroughwordpress: 'https://youtube.com/playlist?list=PLc0Bqc25RKTg&si=RezB3e_Dcfm7jOqA',
+  youtubeautomation: 'https://youtube.com/playlist?list=PLfwp9CvuUprE&si=PQzJ7KfoQkhiD6xm'
+};
+
+const PLAYLIST_THUMBNAILS = {
+  canva: '/images/thumb-graphics.jpeg',
+  graphicdesigning: '/images/thumb-graphics.jpeg',
+  graphicdesigningthroughcanva: '/images/thumb-graphics.jpeg',
+  graphicsdesigning: '/images/thumb-graphics.jpeg',
+  ai: '/images/thumb-ai.jpeg',
+  artificialintelligence: '/images/thumb-ai.jpeg',
+  advancedartificialintelligence: '/images/thumb-ai.jpeg',
+  wordpress: '/images/thumb-webdev.jpeg',
+  webdevelopment: '/images/thumb-webdev.jpeg',
+  webdevelopmentthroughwordpress: '/images/thumb-webdev.jpeg',
+  youtubeautomation: '/images/thumb-yt.jpeg'
+};
 
 export default function PracticalClassesPage({ onNavigate, searchParams }) {
-  const { courses } = useCourses();
-  const initialCourseName = searchParams?.get('course') || courses[0].title;
-  const initialCourse = courses.find(c => c.title.toLowerCase() === initialCourseName.toLowerCase()) || courses[0];
+  const courseParam = searchParams ? searchParams.get('course') : null;
+  const label = courseParam || 'YouTube Automation';
+  const courseKey = label.toLowerCase().replace(/[^a-z]/g, '');
 
-  const [selectedCourse, setSelectedCourse] = useState(initialCourse);
-  const [activeQuestion, setActiveQuestion] = useState(selectedCourse.questions?.[0] || null);
+  const themeClass = label.toLowerCase().includes('youtube')
+    ? 'theme-youtube'
+    : label.toLowerCase().includes('artificial') || label.toLowerCase().includes('ai')
+    ? 'theme-ai'
+    : label.toLowerCase().includes('canva') || label.toLowerCase().includes('graphic')
+    ? 'theme-canva'
+    : 'theme-wordpress';
 
-  const handleCourseChange = (course) => {
-    setSelectedCourse(course);
-    setActiveQuestion(course.questions?.[0] || null);
-  };
+  useEffect(() => {
+    document.body.classList.add(themeClass);
+    return () => {
+      document.body.classList.remove('theme-youtube', 'theme-ai', 'theme-canva', 'theme-wordpress');
+    };
+  }, [themeClass]);
+
+  const playlistLink = PLAYLIST_LINKS[courseKey] || PLAYLIST_LINKS.youtubeautomation;
+  const playlistThumbnail = PLAYLIST_THUMBNAILS[courseKey] || PLAYLIST_THUMBNAILS.youtubeautomation;
 
   return (
-    <div className="practical-classes-view main-container" style={{ padding: '36px 20px' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px', flexWrap: 'wrap', gap: '16px' }}>
-        <div>
-          <span className="section-kicker">Interactive Classroom</span>
-          <h1 style={{ fontSize: '2rem', fontWeight: 800, margin: '4px 0' }}>Live &amp; Practical Classes</h1>
-          <p style={{ color: 'var(--text-secondary)', margin: 0 }}>Follow guided walkthroughs for every curriculum question.</p>
+    <div id="classesMain">
+      <div className="page-hero">
+        <div className="hero-bg" aria-hidden="true">
+          <span className="hero-bg__grid"></span>
+          <span className="hero-bg__glow hero-bg__glow--b"></span>
         </div>
-        <button className="btn btn-secondary" onClick={() => onNavigate('/student/dashboard')}>
-          Go to Student Workspace <Icon name="arrow-right" />
-        </button>
-      </div>
 
-      {/* Course Selection Pills */}
-      <div style={{ display: 'flex', gap: '10px', overflowX: 'auto', paddingBottom: '12px', marginBottom: '24px' }}>
-        {courses.map(course => (
+        <div className="main-container">
           <button
-            key={course.id}
             type="button"
-            className={`btn ${selectedCourse.id === course.id ? 'btn-primary' : 'btn-outline'}`}
-            onClick={() => handleCourseChange(course)}
-            style={{ whiteSpace: 'nowrap' }}
+            className="btn btn-glass btn-sm mb-3"
+            onClick={() => onNavigate('/courses')}
           >
-            {course.title}
+            <Icon name="arrow-left" /> Back to course
           </button>
-        ))}
+
+          <span className="pill-badge pill-glass">
+            <Icon name="play-circle" />
+            <span>Practical live classes</span>
+          </span>
+          <h1 className="display-2 mt-2" id="pageTitle">
+            {label} practical live classes.
+          </h1>
+          <p className="lead mt-2" style={{ color: '#b3c1dc', maxWidth: '62ch' }}>
+            Watch the selected course videos, follow along with each lesson, and practice the workflow
+            shown by your mentor.
+          </p>
+        </div>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '24px' }}>
-        {/* Main Video View */}
-        <div className="card" style={{ padding: '24px', overflow: 'hidden' }}>
-          <div style={{ position: 'relative', width: '100%', paddingTop: '56.25%', background: '#000', borderRadius: '12px', overflow: 'hidden', marginBottom: '20px' }}>
-            <iframe
-              src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=0"
-              title="Lecture Video"
-              style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', border: 'none' }}
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
-            />
+      <div className="main-container">
+        <div className="card" style={{ marginTop: 'clamp(1.5rem, 4vw, 2.5rem)' }}>
+          <div className="playlist-heading">
+            <span className="tv-logo" aria-hidden="true">
+              <svg viewBox="0 0 24 24" style={{ width: '24px', height: '24px', fill: 'currentColor' }}>
+                <rect x="3" y="5" width="18" height="14" rx="2"></rect>
+                <path d="m8 2 4 3 4-3"></path>
+                <path d="m10 10 4 2-4 2z"></path>
+              </svg>
+            </span>
+            <div>
+              <h2 id="playlistTitle">{label} video playlist</h2>
+              <p className="muted small">Open the official playlist for this course.</p>
+            </div>
           </div>
 
-          {activeQuestion && (
-            <div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '8px' }}>
-                <span className="badge badge-accent">Lecture {activeQuestion.number}</span>
-                <span className="pill-sm"><Icon name="clock" /> 10:00 Requirement</span>
-              </div>
-              <h2 style={{ fontSize: '1.4rem', fontWeight: 700, marginBottom: '8px' }}>{activeQuestion.title}</h2>
-              <p style={{ color: 'var(--text-secondary)', lineHeight: 1.6 }}>{activeQuestion.description}</p>
-
-              <div style={{ display: 'flex', gap: '12px', marginTop: '20px' }}>
-                <button
-                  className="btn btn-primary"
-                  onClick={() => onNavigate('/student/dashboard')}
-                >
-                  <Icon name="check-circle-2" /> Mark Complete in Workspace
-                </button>
-                <a
-                  className="btn btn-glass"
-                  href={selectedCourse.playlist}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <Icon name="external-link" /> Full YouTube Playlist
-                </a>
-              </div>
-            </div>
-          )}
+          <div className="playlist-form mt-3">
+            <img
+              className="playlist-thumbnail"
+              id="playlistThumbnail"
+              src={playlistThumbnail}
+              alt={`${label} playlist thumbnail`}
+              loading="lazy"
+              decoding="async"
+              onError={(e) => { e.target.style.display = 'none'; }}
+            />
+            <a
+              className="playlist-button"
+              id="playlistButton"
+              href={playlistLink}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <Icon name="external-link" /> Open video playlist
+            </a>
+          </div>
         </div>
 
-        {/* Playlist & Questions Sidebar */}
-        <div className="card" style={{ padding: '20px', height: 'fit-content' }}>
-          <h3 style={{ fontSize: '1.15rem', fontWeight: 700, marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <Icon name="book-open" /> Curriculum Lessons
-          </h3>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-            {(selectedCourse.questions || []).map((q, idx) => {
-              const isSelected = activeQuestion?.id === q.id;
-              return (
-                <div
-                  key={q.id || idx}
-                  onClick={() => setActiveQuestion(q)}
-                  style={{
-                    padding: '14px',
-                    borderRadius: '8px',
-                    border: isSelected ? '2px solid var(--primary)' : '1px solid var(--border)',
-                    background: isSelected ? 'var(--primary-subtle, rgba(30,64,175,0.08))' : 'var(--surface)',
-                    cursor: 'pointer',
-                    transition: 'all 0.15s ease'
-                  }}
-                >
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '4px' }}>
-                    <span style={{ fontWeight: 600, fontSize: '0.9rem' }}>Exercise {q.number || idx + 1}</span>
-                    <span style={{ fontSize: '0.8rem', color: 'var(--text-tertiary)' }}><Icon name="play" /> 10 min</span>
-                  </div>
-                  <div style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                    {q.title}
-                  </div>
-                </div>
-              );
-            })}
+        <div className="section-block">
+          <div className="section-header text-center">
+            <div>
+              <span className="section-kicker">How to use this page</span>
+              <h2 className="section-title mt-1">Get more out of every lesson</h2>
+            </div>
+          </div>
+
+          <div className="grid-3">
+            <div className="card card-hover">
+              <span className="feature-icon"><Icon name="target" /></span>
+              <h3>Follow the list in order</h3>
+              <p className="muted small mt-1">
+                The playlist is arranged so each lesson builds on the workflow covered in the previous one.
+              </p>
+            </div>
+            <div className="card card-hover">
+              <span className="feature-icon"><Icon name="rocket" /></span>
+              <h3>Practise while you watch</h3>
+              <p className="muted small mt-1">
+                Keep your tool open next to the video and repeat each step yourself instead of only watching.
+              </p>
+            </div>
+            <div className="card card-hover">
+              <span className="feature-icon"><Icon name="send" /></span>
+              <h3>Submit your practice work</h3>
+              <p className="muted small mt-1">
+                Send the result back from your student workspace so your mentor can review it.
+              </p>
+            </div>
+          </div>
+
+          <div className="row mt-4" style={{ justifyContent: 'center' }}>
+            <button
+              className="btn btn-primary"
+              type="button"
+              onClick={() => onNavigate('/student/dashboard')}
+            >
+              <Icon name="layout-dashboard" /> Open your workspace
+            </button>
+            <button
+              className="btn btn-secondary"
+              type="button"
+              onClick={() => onNavigate('/register')}
+            >
+              Create student account
+            </button>
           </div>
         </div>
       </div>
